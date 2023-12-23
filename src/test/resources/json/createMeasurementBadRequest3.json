@@ -1,0 +1,15 @@
+{
+  "type": "about:blank",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "Bad Request",
+  "instance": "/api/measurements",
+  "fieldErrors": [
+    {
+      "datesCorrect": "Дата начала измерения должна быть раньше даты окончания измерения"
+    },
+    {
+      "measurement": "must be greater than 0"
+    }
+  ]
+}

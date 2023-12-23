@@ -1,0 +1,18 @@
+{
+  "type": "about:blank",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "Bad Request",
+  "instance": "/api/measurements",
+  "fieldErrors": [
+    {
+      "endDate": "must be a past date"
+    },
+    {
+      "measurement": "must be greater than 0"
+    },
+    {
+      "startDate": "must be a past date"
+    }
+  ]
+}

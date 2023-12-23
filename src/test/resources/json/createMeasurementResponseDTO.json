@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "username": "user1",
+  "measurementType": "GAS",
+  "measurement": 100,
+  "createdDate": "2023-12-23T09:35:38.165Z",
+  "createdBy": "user1",
+  "lastModifiedDate": "2023-12-23T09:35:38.165Z",
+  "lastModifiedBy": "user1",
+  "startDate": "2023-11-22",
+  "endDate": "2023-12-22"
+}

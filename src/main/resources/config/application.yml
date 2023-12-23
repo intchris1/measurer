@@ -1,0 +1,43 @@
+info:
+  project:
+    version: "@project.version@"
+
+logging:
+  level:
+    ROOT: INFO
+
+spring:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+  application:
+    name: measurer
+  datasource:
+    driver-class-name: org.hsqldb.jdbc.JDBCDriver
+    url: jdbc:hsqldb:mem:testdb;DB_CLOSE_DELAY=-1
+    username: test
+    password: test
+
+server:
+  port: 8080
+  error:
+    include-message: always
+
+springdoc:
+  show-actuator: true
+
+measurer:
+  users:
+    - username: admin
+      password: admin
+      roles: ADMIN
+    - username: user1
+      password: user1
+      roles: USER
+    - username: user2
+      password: user2
+      roles: USER
+    - username: moderator
+      password: moderator
+      roles: MODERATOR
