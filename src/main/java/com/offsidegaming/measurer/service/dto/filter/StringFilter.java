@@ -3,7 +3,6 @@ package com.offsidegaming.measurer.service.dto.filter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
-import java.util.Arrays;
 import java.util.List;
 
 @NoArgsConstructor
@@ -15,46 +14,6 @@ public class StringFilter extends Filter<String> {
     private String like;
     private String contains;
     private String doesNotContain;
-
-    public StringFilter(final StringFilter filter) {
-        super(filter);
-        this.contains = filter.contains;
-        this.doesNotContain = filter.doesNotContain;
-        this.like = filter.like;
-    }
-
-    public static StringFilter eq(String equals) {
-        return new StringFilter().setEquals(equals);
-    }
-
-    public static StringFilter notEq(String equals) {
-        return new StringFilter().setNotEquals(equals);
-    }
-
-    public static StringFilter contains(String contains) {
-        return new StringFilter().setContains(contains);
-    }
-
-    public static StringFilter in(String... values) {
-        return new StringFilter().setIn(Arrays.asList(values));
-    }
-
-    public static StringFilter in(List<String> values) {
-        return new StringFilter().setIn(values);
-    }
-
-    public static StringFilter notIn(List<String> values) {
-        return new StringFilter().setNotIn(values);
-    }
-
-    public static StringFilter notIn(String... values) {
-        return new StringFilter().setNotIn(Arrays.asList(values));
-    }
-
-    @Override
-    public StringFilter copy() {
-        return new StringFilter(this);
-    }
 
     public String getContains() {
         return contains;

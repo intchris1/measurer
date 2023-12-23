@@ -24,11 +24,6 @@ public class RangeFilter<T extends Comparable<? super T> & Serializable> extends
         this.lessThanOrEqual = filter.lessThanOrEqual;
     }
 
-    @Override
-    public RangeFilter<T> copy() {
-        return new RangeFilter<>(this);
-    }
-
     public T getGreaterThan() {
         return greaterThan;
     }

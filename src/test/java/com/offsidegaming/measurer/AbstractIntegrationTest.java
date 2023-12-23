@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = MeasurerApplication.class)
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Transactional

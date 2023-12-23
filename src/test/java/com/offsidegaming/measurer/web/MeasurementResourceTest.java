@@ -5,7 +5,6 @@ import com.offsidegaming.measurer.entity.Measurement;
 import com.offsidegaming.measurer.service.dto.MeasurementDTO;
 import com.offsidegaming.measurer.service.dto.SearchMeasurementCriteria;
 import com.offsidegaming.measurer.service.dto.filter.InstantFilter;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -34,12 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class MeasurementResourceTest extends AbstractIntegrationTest {
-
-    @AfterEach
-    void nya() {
-        //todo remove
-        System.out.println("SIZE " + measurementRepository.findAll().size());
-    }
 
     @Test
     void givenAuthenticatedUser_createMeasurement_ok() throws Exception {
