@@ -24,10 +24,6 @@ public class Filter<T extends Serializable> implements Serializable {
         this.notIn = filter.notIn == null ? null : new ArrayList<>(filter.notIn);
     }
 
-    public Filter<T> copy() {
-        return new Filter<>(this);
-    }
-
     public T getEquals() {
         return equals;
     }
@@ -62,9 +58,5 @@ public class Filter<T extends Serializable> implements Serializable {
     public Filter<T> setNotIn(List<T> notIn) {
         this.notIn = notIn;
         return this;
-    }
-
-    protected String getFilterName() {
-        return this.getClass().getSimpleName();
     }
 }

@@ -23,6 +23,6 @@ public interface MeasurementMapper {
 
     List<MeasurementDTO> toMeasurementDtoList(List<Measurement> measurementDTOS);
 
-    Measurement toEntity(MeasurementDTO measurementEntity);
+    Measurement toMeasurementEntity(MeasurementDTO measurementEntity);
 
 }

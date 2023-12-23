@@ -14,8 +14,9 @@ import java.util.List;
 public interface MeasurementRepository extends JpaRepository<Measurement, Long>,
         QuerydslPredicateExecutor<Measurement> {
 
-    @Query("select m.id from Measurement m where m.endDate>?1 and m.username=?2 and m.measurementType=?3")
-    List<Long> findAllByEndDateGreaterThanAndUsernameEqualsAndMeasurementEquals(LocalDate startDate,
-                                                                                String username,
-                                                                                MeasurementType measurementType);
+    @Query("select m.id from Measurement m where (m.endDate >= ?1 AND m.startDate <= ?2) and m.username=?3 and m.measurementType=?4")
+    List<Long> findAllWithConflictDatesForGivenUsernameAndMeasurements(LocalDate startDate,
+                                                                       LocalDate endDate,
+                                                                       String username,
+                                                                       MeasurementType measurementType);
 }

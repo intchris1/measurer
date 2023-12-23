@@ -5,7 +5,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 
 @NoArgsConstructor
@@ -13,55 +12,6 @@ public class InstantFilter extends RangeFilter<Instant> {
 
     @Serial
     private static final long serialVersionUID = 1L;
-
-    public InstantFilter(final InstantFilter filter) {
-        super(filter);
-    }
-
-    public static InstantFilter eq(Instant equals) {
-        return new InstantFilter().setEquals(equals);
-    }
-
-    public static InstantFilter notEq(Instant equals) {
-        return new InstantFilter().setNotEquals(equals);
-    }
-
-    public static InstantFilter lt(Instant value) {
-        return new InstantFilter().setLessThan(value);
-    }
-
-    public static InstantFilter lte(Instant value) {
-        return new InstantFilter().setLessThanOrEqual(value);
-    }
-
-    public static InstantFilter gt(Instant value) {
-        return new InstantFilter().setGreaterThan(value);
-    }
-
-    public static InstantFilter gte(Instant value) {
-        return new InstantFilter().setGreaterThanOrEqual(value);
-    }
-
-    public static InstantFilter in(Instant... values) {
-        return new InstantFilter().setIn(Arrays.asList(values));
-    }
-
-    public static InstantFilter in(List<Instant> values) {
-        return new InstantFilter().setIn(values);
-    }
-
-    public static InstantFilter notIn(List<Instant> values) {
-        return new InstantFilter().setNotIn(values);
-    }
-
-    public static InstantFilter notIn(Instant... values) {
-        return new InstantFilter().setNotIn(Arrays.asList(values));
-    }
-
-    @Override
-    public InstantFilter copy() {
-        return new InstantFilter(this);
-    }
 
     @Override
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

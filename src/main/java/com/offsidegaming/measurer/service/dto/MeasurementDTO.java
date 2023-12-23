@@ -80,6 +80,6 @@ public class MeasurementDTO implements Serializable {
     @JsonIgnore
     @Schema(hidden = true)
     private boolean isDatesCorrect() {
-        return startDate == null || endDate == null || startDate.isBefore(endDate);
+        return startDate == null || endDate == null || startDate.isBefore(endDate) || startDate.isEqual(endDate);
     }
 }

@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class SecurityUtils {
 
-    public static final String USER_ROLE = "ROLE_USER";
-    public static final String ADMIN_ROLE = "ROLE_ADMIN";
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     public static UserData getCurrentUserData() {
         Optional<Authentication> auth = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());

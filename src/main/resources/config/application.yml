@@ -15,7 +15,7 @@ spring:
     name: measurer
   datasource:
     driver-class-name: org.hsqldb.jdbc.JDBCDriver
-    url: jdbc:hsqldb:mem:testdb;DB_CLOSE_DELAY=-1
+    url: jdbc:hsqldb:mem:testdb
     username: test
     password: test
 

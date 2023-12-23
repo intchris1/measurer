@@ -6,7 +6,6 @@ import com.offsidegaming.measurer.service.dto.MeasurementDTO;
 import lombok.experimental.UtilityClass;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDate;
 
 @UtilityClass
@@ -27,5 +26,12 @@ public class TestObjects {
                 .setStartDate(LocalDate.of(2023, 11, 22))
                 .setEndDate(LocalDate.of(2023, 12, 22))
                 .setUsername(username);
+    }
+
+    public static Measurement getMeasurement(LocalDate startDate, LocalDate endDate) {
+        var measurement = getMeasurement("username");
+        measurement.setStartDate(startDate);
+        measurement.setEndDate(endDate);
+        return measurement;
     }
 }

@@ -21,8 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import static com.offsidegaming.measurer.util.SecurityUtils.ADMIN_ROLE;
-import static com.offsidegaming.measurer.util.SecurityUtils.USER_ROLE;
+import static com.offsidegaming.measurer.util.SecurityUtils.ROLE_ADMIN;
+import static com.offsidegaming.measurer.util.SecurityUtils.ROLE_USER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -30,8 +30,9 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Slf4j
 public class MeasurementServiceImpl implements MeasurementService {
 
-    public static final String USERNAME_NOT_PRESENT_ERROR = "Username is not present in current authentication";
+    public static final String USERNAME_NOT_PRESENT_ERROR = "Username is not present in current authentication and not provided in request";
     public static final String USERNAME_NOT_MATCHED_ERROR = "Given username (%s) doesn't match authentication username (%s)";
+    public static final String USERNAME_NOT_SET_ERROR = "Couldn't set username for measurement creation";
 
     private final MeasurementRepository repository;
     private final MeasurementCriteriaMapper measurementCriteriaMapper;
@@ -42,7 +43,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     public MeasurementDTO createMeasurement(MeasurementDTO measurementDTO) {
         setUserNameForCreation(measurementDTO);
         validateMeasurementDates(measurementDTO);
-        Measurement entity = measurementMapper.toEntity(measurementDTO);
+        Measurement entity = measurementMapper.toMeasurementEntity(measurementDTO);
         Measurement saved = repository.save(entity);
         return measurementMapper.toMeasurementDto(saved);
     }
@@ -58,47 +59,52 @@ public class MeasurementServiceImpl implements MeasurementService {
 
     private static void setUserNameForCreation(MeasurementDTO measurementDTO) {
         UserData userData = SecurityUtils.getCurrentUserData();
-        if (userData.getUsername() == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USERNAME_NOT_PRESENT_ERROR);
+        if (userData.getRoles().contains(ROLE_USER)) {
+            measurementDTO.setUsername(getUserNameFromContextIfBlankOrKeepCurrent(measurementDTO.getUsername(), userData));
+            validateUsernameMatchesContext(measurementDTO.getUsername(), userData);
         }
-        if (userData.getRoles().contains(ADMIN_ROLE) && isBlank(measurementDTO.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username must not be empty");
-        }
-        if (userData.getRoles().contains(USER_ROLE)) {
-            if (isBlank(measurementDTO.getUsername())) {
-                measurementDTO.setUsername(userData.getUsername());
-                log.debug("Set username for create measurement request: {}", measurementDTO.getUsername());
-            }
-            if (!measurementDTO.getUsername().equals(userData.getUsername())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, USERNAME_NOT_MATCHED_ERROR
-                        .formatted(measurementDTO.getUsername(), userData.getUsername()));
-            }
+        if (userData.getRoles().contains(ROLE_ADMIN)) {
+            measurementDTO.setUsername(getUserNameFromContextIfBlankOrKeepCurrent(measurementDTO.getUsername(), userData));
         }
         if (isBlank(measurementDTO.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Couldn't set username for measurement creation");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, USERNAME_NOT_SET_ERROR);
+        }
+    }
+
+    private static void validateUsernameMatchesContext(String username, UserData userData) {
+        if (!username.equals(userData.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, USERNAME_NOT_MATCHED_ERROR
+                    .formatted(username, userData.getUsername()));
+        }
+    }
+
+    private static String getUserNameFromContextIfBlankOrKeepCurrent(String username, UserData userData) {
+        if (isBlank(username)) {
+            if (userData.getUsername() == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USERNAME_NOT_PRESENT_ERROR);
+            }
+            log.debug("Setting username for request: {}", userData.getUsername());
+            return userData.getUsername();
+        } else {
+            return username;
         }
     }
 
     private static void setUserNameForSearch(SearchMeasurementCriteria searchMeasurementCriteria) {
         UserData userData = SecurityUtils.getCurrentUserData();
-        if (userData.getUsername() == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USERNAME_NOT_PRESENT_ERROR);
+        if (userData.getRoles().contains(ROLE_ADMIN)) {
+            return;
         }
-        if (!userData.getRoles().contains(ADMIN_ROLE) && userData.getRoles().contains(USER_ROLE)) {
-            if (isBlank(searchMeasurementCriteria.getUsername())) {
-                searchMeasurementCriteria.setUsername(userData.getUsername());
-                log.debug("Set username for search request: {}", searchMeasurementCriteria.getUsername());
-            }
-            if (!searchMeasurementCriteria.getUsername().equals(userData.getUsername())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, USERNAME_NOT_MATCHED_ERROR
-                        .formatted(searchMeasurementCriteria.getUsername(), userData.getUsername()));
-            }
+        if (userData.getRoles().contains(ROLE_USER)) {
+            searchMeasurementCriteria.setUsername(getUserNameFromContextIfBlankOrKeepCurrent(searchMeasurementCriteria.getUsername(), userData));
+            validateUsernameMatchesContext(searchMeasurementCriteria.getUsername(), userData);
         }
     }
 
     private void validateMeasurementDates(MeasurementDTO measurementDTO) {
-        List<Long> alreadyExistingMeasurements = repository.findAllByEndDateGreaterThanAndUsernameEqualsAndMeasurementEquals(
-                measurementDTO.getStartDate(), measurementDTO.getUsername(), measurementDTO.getMeasurementType());
+        List<Long> alreadyExistingMeasurements = repository.findAllWithConflictDatesForGivenUsernameAndMeasurements(
+                measurementDTO.getStartDate(), measurementDTO.getEndDate(),
+                measurementDTO.getUsername(), measurementDTO.getMeasurementType());
         if (!alreadyExistingMeasurements.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Given startDate, endDate are in conflict with previously created measurements for this user (identifiers: %s)".formatted(alreadyExistingMeasurements));
